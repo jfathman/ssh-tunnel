@@ -1,0 +1,81 @@
+#! /bin/sh -e
+
+# /etc/init.d/ssh-tunnel
+
+### BEGIN INIT INFO
+# Provides:          ssh-tunnel
+# Required-Start:    $network $remote_fs
+# Required-Stop:     $network $remote_fs
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Create ssh reverse tunnel
+# Description:       Create ssh reverse tunnel from device to cloud server.
+### END INIT INFO
+
+# Assumes autossh previously installed:
+# $ sudo apt-get install autossh
+
+# Assumes interactive password not required:
+# (as root since runs as root):
+# $ sudo ssh-keygen -t rsa
+# $ sudo ssh-copy-id $USER@$HOST
+
+# Update sysvinit script links:
+# $ sudo update-rc.d ssh-tunnel defaults
+# $ sudo update-rc.d ssh-tunnel disable
+# $ sudo update-rc.d ssh-tunnel remove
+
+# $ sudo service ssh-tunnel start
+# $ sudo service ssh-tunnel restart
+# $ sudo service ssh-tunnel stop
+
+# $ sudo /etc/init.d/ssh-tunnel start
+# $ sudo /etc/init.d/ssh-tunnel restart
+# $ sudo /etc/init.d/ssh-tunnel stop
+
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+# TODO read options from /etc/ssh-tunnel.conf
+
+PORT=3001
+HOST=cloud-server
+USER=jfathman
+
+NAME=ssh-tunnel
+#PIDDIR=/var/run/$NAME
+#PIDFILE=$PIDDIR/$NAME.pid
+PIDFILE=/var/run/$NAME.pid
+DAEMON=/usr/bin/autossh
+DAEMON_OPTS="-M 0 -N -R $PORT:localhost:22 -o ServerAliveInterval=60 -o ServerAliveCountMax=3 -i /home/$USER/.ssh/id_rsa $USER@$HOST"
+
+if [ "$(id -u)" != "0" ]; then
+  echo "Must run as root: $NAME"
+  exit 1
+fi
+
+# TODO do not start if already running
+# TODO report not stopped if not running
+# TODO add support for status
+
+case "$1" in
+  start)
+    echo "Starting: $NAME"
+    start-stop-daemon --start --background --quiet --make-pidfile --pidfile $PIDFILE --exec $DAEMON -- $DAEMON_OPTS
+    ;;
+  stop)
+    echo "Stopping: $NAME"
+    start-stop-daemon --stop --quiet --oknodo --pidfile $PIDFILE
+    ;;
+  restart)
+    echo "Stopping: $NAME"
+    start-stop-daemon --stop --quiet --oknodo --pidfile $PIDFILE
+    echo "Starting: $NAME"
+    start-stop-daemon --start --background --quiet --make-pidfile --pidfile $PIDFILE --exec $DAEMON -- $DAEMON_OPTS
+    ;;
+  *)
+    echo "Usage: "$1" {start|stop|restart}"
+    exit 1
+    ;;
+esac
+
+exit 0

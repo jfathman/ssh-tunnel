@@ -73,6 +73,7 @@ Linux beaglebone 3.8.13-bone47
 [jfathman@beaglebone ~]$ exit
 logout
 Connection to localhost closed.
+[jfathman@cloud ~]$
 ```
 ```
 [jfathman@cloud ~]$ rpi
@@ -81,4 +82,5 @@ Linux rpi 3.18.7-v7+
 [jfathman@rpi ~]$ exit
 logout
 Connection to localhost closed.
+[jfathman@cloud ~]$
 ```

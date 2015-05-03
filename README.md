@@ -20,9 +20,9 @@ $ sudo apt-get install autossh
 ```
 Copy ssh-tunnel to /etc/init.d/ssh-tunnel.
 
-Define HOST and PORT in /etc/init.d/ssh-tunnel.
+Define HOST, PORT, and USER in /etc/init.d/ssh-tunnel.
 
-Define HOST in /etc/hosts.
+Define equivalent HOST in /etc/hosts.
 
 Eliminate need for interactive password (as root since runs as root at startup):
 ```

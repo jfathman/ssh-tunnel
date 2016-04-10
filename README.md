@@ -22,7 +22,12 @@ Copy ssh-tunnel to /etc/init.d/ssh-tunnel.
 
 Define HOST, PORT, and USER in /etc/init.d/ssh-tunnel.
 
-Define equivalent HOST in /etc/hosts.
+Make /etc/init.d/ssh-tunnel executable:
+```
+$ sudo chmod 755 /etc/init.d/ssh-tunnel
+```
+
+Define equivalent HOST in /etc/hosts if not DNS resolvable.
 
 Eliminate need for interactive password (as root since runs as root at startup):
 ```
